@@ -1,37 +1,36 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { Menu, X, ChevronDown, ChevronRight } from 'lucide-react'
+import React from "react";
+import { Menu, X, ChevronDown, ChevronRight } from "lucide-react";
 
 const menuItems = [
   {
-    name: 'Home',
-    href: '#',
+    name: "Home",
+    href: "/home",
   },
   {
-    name: 'About',
-    href: '#',
+    name: "Scraper",
+    href: "/scraper",
   },
   {
-    name: 'Contact',
-    href: '#',
+    name: "Contact",
+    href: "#",
   },
-]
+];
 
 export default function Nav() {
-
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false)
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
     <div className="relative w-full bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
         <div className="inline-flex items-center space-x-2">
           <span>
-                <h1> Logo </h1>
+            <h1> Logo </h1>
           </span>
           <span className="font-bold">Web</span>
         </div>
@@ -56,12 +55,14 @@ export default function Nav() {
           <button
             type="button"
             className="rounded-md bg-transparent px-3 py-2 text-sm font-semibold text-black hover:bg-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            onClick={() => (window.location.href = "/register")}
           >
-            Sign In
+            Register
           </button>
           <button
             type="button"
             className="rounded-md border border-black px-3 py-2 text-sm font-semibold text-black shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            onClick={() => (window.location.href = "/login")}
           >
             Log In
           </button>
@@ -76,7 +77,7 @@ export default function Nav() {
                 <div className="flex items-center justify-between">
                   <div className="inline-flex items-center space-x-2">
                     <span>
-                        <h1> Logo </h1>
+                      <h1> Logo </h1>
                     </span>
                     <span className="font-bold">Web</span>
                   </div>
@@ -113,12 +114,14 @@ export default function Nav() {
                   <button
                     type="button"
                     className="w-full rounded-md border border-black px-3 py-2 text-sm font-semibold text-black shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                    onClick={() => (window.location.href = "/register")}
                   >
-                    Sign In
+                    Register
                   </button>
                   <button
                     type="button"
                     className="w-full rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                    onClick={() => (window.location.href = "/login")}
                   >
                     Log In
                   </button>
@@ -129,5 +132,5 @@ export default function Nav() {
         )}
       </div>
     </div>
-  )
+  );
 }

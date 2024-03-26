@@ -1,7 +1,10 @@
-import React from 'react'
-
+import React from "react";
+import { useState, useEffect } from "react";
+import Card from "./product/Card";
+import Filter from "./product/Filter";
 
 export default function Home() {
+  const [data, setData] = useState([]);
 
   const retData = async () => {
     var response = await fetch(`http://127.0.0.1:5050/product/netmeds`, {
@@ -9,15 +12,12 @@ export default function Home() {
     });
     response = await response.json();
     console.log(response.results);
+    setData(response.results);
   };
 
-  return (
-    <div>
-      <h1>Hello,</h1>
+  useEffect(() => {
+    retData();
+  }, []);
 
-      <button type="button" onClick={retData}>
-        button
-      </button>
-    </div>
-  );
+  return <Filter products={data} />;
 }
