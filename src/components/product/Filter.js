@@ -11,6 +11,8 @@ export default function Filter(props) {
 
   const [products, setProducts] = useState(props.products); // Manage products with useState
 
+  const BASE_URL = "http://127.0.0.1:5050";
+
   useEffect(() => {
     // Update products when props.products change
     setProducts(props.products);
@@ -33,31 +35,49 @@ export default function Filter(props) {
 
   // +++++++++++++++++++++++++++++
 
+  let allProducts = [];
+
   const searchByName = async () => {
     const name = document.getElementById("search_by_name").value;
 
-    var response = await fetch(
-      `http://127.0.0.1:5050/product/netmeds?name=${name}`,
-      {
-        method: "get",
-      }
-    );
+    // Search in netmeds
+    var response = await fetch(`${BASE_URL}/product/netmeds?name=${name}`, {
+      method: "get",
+    });
 
     response = await response.json();
-    setProducts(response.results); // Update products state here
 
-    console.log(response.results);
+    allProducts = response.results;
+
+    // Search in zeelab
+    response = await fetch(`${BASE_URL}/product/zeelab?name=${name}`, {
+      method: "get",
+    });
+
+    response = await response.json();
+
+    allProducts = allProducts.concat(response.results);
+
+    // Search in truemeds
+    response = await fetch(`${BASE_URL}/product/truemeds?name=${name}`, {
+      method: "get",
+    });
+
+    response = await response.json();
+
+    allProducts = allProducts.concat(response.results);
+
+    setProducts(allProducts); // Update products state here
+
+    console.log(allProducts);
   };
 
   const searchByContent = async () => {
     const info = document.getElementById("search_by_content").value;
 
-    var response = await fetch(
-      `http://127.0.0.1:5050/product/zeelab?q=${info}`,
-      {
-        method: "get",
-      }
-    );
+    var response = await fetch(`${BASE_URL}/product/zeelab?q=${info}`, {
+      method: "get",
+    });
 
     response = await response.json();
     setProducts(response.results); // Update products state here
@@ -142,7 +162,7 @@ export default function Filter(props) {
             </h3>
             <input
               className="flex h-10 w-full rounded-md border border-black/30 bg-transparent px-3 py-2 text-sm placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-black/30 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="content of product"
+              placeholder="Name of the product"
               id="search_by_name"
             ></input>{" "}
             <br />
@@ -161,7 +181,7 @@ export default function Filter(props) {
             </h3>
             <input
               className="flex h-10 w-full rounded-md border border-black/30 bg-transparent px-3 py-2 text-sm placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-black/30 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Name"
+              placeholder="content of the product"
               id="search_by_content"
             ></input>{" "}
             <br />

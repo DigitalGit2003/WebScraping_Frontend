@@ -37,24 +37,23 @@ export default function Login() {
         },
       });
 
-      result = await result.json();
+      if (result.ok) {
+        result = await result.json();
+        console.log(result);
 
-      setIsLoading(false);
-      let msg = "";
-      
-      if (result) {
-        if (result.message) {
-          msg += result.message;
-        }
-      } else {
-        console.log("result is undefined");
-      }
+        localStorage.setItem("access_token", result.access_token);
+        localStorage.setItem("refresh_token", result.refresh_token);
 
-      if (msg === "login") {
         navigate("/scraper");
       } else {
-        setIsError(msg);
+        result = await result.json();
+        let msg = "";
+        msg += result.message;
+
+        setIsError(result.message);
       }
+
+      setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
       setIsError("Something Went Wrong");
@@ -79,9 +78,7 @@ export default function Login() {
                 Create a free account
               </a>
             </p>
-            <span className="text-red-500">
-              {isError}
-            </span>
+            <span className="text-red-500">{isError}</span>
             <form action="#" method="POST" className="mt-8">
               <div className="space-y-5">
                 <div>

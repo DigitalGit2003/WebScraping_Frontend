@@ -1,46 +1,96 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Scraper() {
   // All in One
   const BASE_URI = "http://127.0.0.1:5050";
+
+  const navigate = useNavigate();
 
   const netmedsScrape = async () => {
     let result = await fetch(`${BASE_URI}/product/netmeds`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },
     });
 
+    if (result.status === 401) {
+      navigate("/login");
+    } else if (!result.ok) {
+      console.log("Error in fetching data");
+      return;
+    }
+
     result = await result.json();
     console.log(result);
-   
   };
   const zeelabScrape = async () => {
-    let result = await fetch(`${BASE_URI}/product/zeelab`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    let selectedCategory = document.querySelector("select").value;
+
+    // Pass Access Token as part of the request header to authenticate the user
+    let result = await fetch(
+      `${BASE_URI}/product/zeelab?category=${selectedCategory}`,
+      {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      }
+    );
+
+    if (result.status === 401) {
+      navigate("/login");
+    } else if (!result.ok) {
+      console.log("Error in fetching data");
+      return;
+    }
 
     result = await result.json();
     console.log(result);
-    
   };
   const truemedsScrape = async () => {
     let result = await fetch(`${BASE_URI}/product/truemeds`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },
     });
 
+    if (result.status === 401) {
+      navigate("/login");
+    } else if (!result.ok) {
+      console.log("Error in fetching data");
+      return;
+    }
+
     result = await result.json();
     console.log(result);
-    
-    
   };
+
+  const categories = [
+    "bone-joints",
+    "cold-flu",
+    "sugar-care",
+    "eye-ear",
+    "hair",
+    "heart-medicines",
+    "mens",
+    "multivitamins",
+    "nutrition",
+    "oral-care",
+    "personal",
+    "stomach",
+    "thyroid",
+    "womens",
+    "sexual",
+    "skinbeauty",
+    "acidity",
+    "asthma",
+  ];
 
   return (
     <div>
@@ -52,6 +102,16 @@ export default function Scraper() {
         Netmeds Scrape
       </button>
       <br />
+
+      <select>
+        <option value="">Select a Category</option>
+        {categories.map((category, index) => (
+          <option key={index} value={category}>
+            {category}
+          </option>
+        ))}
+      </select>
+
       <br />
       <button
         type="button"
@@ -60,6 +120,7 @@ export default function Scraper() {
       >
         Zeelab Scrape
       </button>
+
       <br />
       <br />
       <button
