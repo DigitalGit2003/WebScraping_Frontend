@@ -1,11 +1,18 @@
-import React from "react";
+import { React, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../../App";
 
 export default function Scraper() {
+  useEffect(() => {
+    if (loggedIn === false) {
+      navigate("/login");
+    }
+  }, []);
+
   // All in One
   const BASE_URI = "http://127.0.0.1:5050";
-
   const navigate = useNavigate();
+  const [loggedIn, setLoggedIn] = useContext(LoginContext);
 
   const netmedsScrape = async () => {
     let result = await fetch(`${BASE_URI}/product/netmeds`, {
@@ -16,7 +23,8 @@ export default function Scraper() {
       },
     });
 
-    if (result.status === 401) {
+    if (result.status === 401 || result.status === 422) {
+      setLoggedIn(false);
       navigate("/login");
     } else if (!result.ok) {
       console.log("Error in fetching data");
@@ -41,7 +49,8 @@ export default function Scraper() {
       }
     );
 
-    if (result.status === 401) {
+    if (result.status === 401 || result.status === 422) {
+      setLoggedIn(false);
       navigate("/login");
     } else if (!result.ok) {
       console.log("Error in fetching data");
@@ -60,7 +69,8 @@ export default function Scraper() {
       },
     });
 
-    if (result.status === 401) {
+    if (result.status === 401 || result.status === 422) {
+      setLoggedIn(false); // Unauthorized user
       navigate("/login");
     } else if (!result.ok) {
       console.log("Error in fetching data");

@@ -1,11 +1,14 @@
 import React from "react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../../App";
 
 export default function Login() {
   // All in One
   const BASE_URI = "http://127.0.0.1:5050";
+
+  const [loggedIn, setLoggedIn] = useContext(LoginContext);
 
   const [formData, setFormData] = useState({});
   const handleChange = (e) => {
@@ -43,6 +46,8 @@ export default function Login() {
 
         localStorage.setItem("access_token", result.access_token);
         localStorage.setItem("refresh_token", result.refresh_token);
+
+        setLoggedIn(true);
 
         navigate("/scraper");
       } else {
