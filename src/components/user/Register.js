@@ -3,8 +3,8 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 export default function Register() {
-  // All in One
-  const BASE_URI = "http://127.0.0.1:5050";
+  
+  const BASE_URI = process.env.REACT_APP_API_URI;
 
   const [formData, setFormData] = useState({});
   const handleChange = (e) => {
@@ -167,7 +167,8 @@ export default function Register() {
                     className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
                     onClick={storeData}
                   >
-                    Create Account <ArrowRight className="ml-2" size={16} />
+                  {isLoading ? "Loading........." : <> Create Account <ArrowRight className="ml-2" size={16} /> </>}
+                  
                   </button>
                 </div>
               </div>

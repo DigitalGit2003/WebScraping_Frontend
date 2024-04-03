@@ -1,6 +1,8 @@
 import { React, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../App";
+import { ProductContext } from "../../App";
+import ScrapeCard from "./ScrapeCard";
 
 export default function Scraper() {
   useEffect(() => {
@@ -8,80 +10,121 @@ export default function Scraper() {
       navigate("/login");
     }
   }, []);
+  
+  const BASE_URI = process.env.REACT_APP_API_URI;
 
-  // All in One
-  const BASE_URI = "http://127.0.0.1:5050";
   const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useContext(LoginContext);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useContext(ProductContext);
+  
+  const [isNLoading, setIsNLoading] = useState(false);
   const netmedsScrape = async () => {
-    let result = await fetch(`${BASE_URI}/product/netmeds`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      },
-    });
-
-    if (result.status === 401 || result.status === 422) {
-      setLoggedIn(false);
-      navigate("/login");
-    } else if (!result.ok) {
-      console.log("Error in fetching data");
-      return;
-    }
-
-    result = await result.json();
-    console.log(result);
-  };
-  const zeelabScrape = async () => {
-    let selectedCategory = document.querySelector("select").value;
-
-    // Pass Access Token as part of the request header to authenticate the user
-    let result = await fetch(
-      `${BASE_URI}/product/zeelab?category=${selectedCategory}`,
-      {
+    try {
+      setIsNLoading(true);
+      let result = await fetch(`${BASE_URI}/product/netmeds`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
+      });
+
+      if (result.status === 401 || result.status === 422) {
+        setLoggedIn(false);
+        navigate("/login");
+      } else if (!result.ok) {
+        setIsNLoading(false);
+        console.log("Error in fetching data");
+        return;
       }
-    );
 
-    if (result.status === 401 || result.status === 422) {
+      result = await result.json();
+      console.log(result.data);
+      setIsNLoading(false);
+
+      setData(result.data);
+      navigate("/home");
+    } catch (e) {
+      setIsNLoading(false);
+      console.log(e);
+    }
+  };
+
+  
+  const [isZLoading, setIsZLoading] = useState(false);
+  const zeelabScrape = async (category) => {
+    let selectedCategory = category;
+
+    try {
+      setIsZLoading(true);
+      // Pass Access Token as part of the request header to authenticate the user
+      let result = await fetch(
+        `${BASE_URI}/product/zeelab?category=${selectedCategory}`,
+        {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+
+      if (result.status === 401 || result.status === 422) {
+        setLoggedIn(false);
+        navigate("/login");
+      } else if (!result.ok) {
+        setIsZLoading(false);
+        console.log("Error in fetching data");
+        return;
+      }
+
+      result = await result.json();
+
+      console.log(result.data);
+      setIsZLoading(false);
+      setData(result.data);
+      navigate("/home");
+    } catch (e) {
       setLoggedIn(false);
-      navigate("/login");
-    } else if (!result.ok) {
-      console.log("Error in fetching data");
-      return;
+      console.log(e);
     }
-
-    result = await result.json();
-    console.log(result);
   };
+
+  const [isTLoading, setIsTLoading] = useState(false);
   const truemedsScrape = async () => {
-    let result = await fetch(`${BASE_URI}/product/truemeds`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      },
-    });
+    try {
+      setIsTLoading(true);
+      let result = await fetch(`${BASE_URI}/product/truemeds`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
 
-    if (result.status === 401 || result.status === 422) {
-      setLoggedIn(false); // Unauthorized user
-      navigate("/login");
-    } else if (!result.ok) {
-      console.log("Error in fetching data");
-      return;
+      if (result.status === 401 || result.status === 422) {
+        setLoggedIn(false); // Unauthorized user
+        navigate("/login");
+      } else if (!result.ok) {
+        setIsTLoading(false);
+        console.log("Error in fetching data");
+        return;
+      }
+
+      result = await result.json();
+      console.log(result.data);
+      setIsTLoading(false);
+
+      setData(result.data);
+      navigate("/home");
+    } catch (e) {
+      setIsTLoading(false);
+      console.log(e);
     }
-
-    result = await result.json();
-    console.log(result);
   };
 
-  const categories = [
+  const zeelab_categories = [
     "bone-joints",
     "cold-flu",
     "sugar-care",
@@ -102,44 +145,35 @@ export default function Scraper() {
     "asthma",
   ];
 
+  const netmeds_categories = [];
+
+  const truemeds_categories = [];
+
   return (
-    <div>
-      <button
-        type="button"
-        className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
-        onClick={netmedsScrape}
-      >
-        Netmeds Scrape
-      </button>
-      <br />
+    <div className="flex flex-wrap">
+      <ScrapeCard
+        web={"Netmeds"}
+        link={"https://www.netmeds.com/"}
+        category={netmeds_categories}
+        onScrape={netmedsScrape}
+        loader={isNLoading}
+      />
 
-      <select>
-        <option value="">Select a Category</option>
-        {categories.map((category, index) => (
-          <option key={index} value={category}>
-            {category}
-          </option>
-        ))}
-      </select>
+      <ScrapeCard
+        web={"Zeelab"}
+        link={"https://zeelabpharmacy.com/"}
+        category={zeelab_categories}
+        onScrape={zeelabScrape}
+        loader={isZLoading}
+      />
 
-      <br />
-      <button
-        type="button"
-        className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
-        onClick={zeelabScrape}
-      >
-        Zeelab Scrape
-      </button>
-
-      <br />
-      <br />
-      <button
-        type="button"
-        className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
-        onClick={truemedsScrape}
-      >
-        Truemeds Scrape
-      </button>
+      <ScrapeCard
+        web={"Truemeds"}
+        link={"https://www.truemeds.in/"}
+        category={truemeds_categories}
+        onScrape={truemedsScrape}
+        loader={isTLoading}
+      />
     </div>
   );
 }

@@ -3,13 +3,13 @@ import { ArrowUpRight } from "lucide-react";
 
 export default function Card(item) {
   item = item.product;
-  
+
   return (
-    <div className="w-[300px] rounded-md border">
+    <div className="w-[300px] rounded-md border-4 m-1">
       <img
         src={item.image_url} // Imagelink
         alt={item.title} // Name
-        className="h-[200px] w-full rounded-t-md object-cover"
+        className="h-[300px] w-full rounded-t-md object-cover"
       />
       <div className="p-4">
         <h1 className="inline-flex items-center text-lg font-semibold">
