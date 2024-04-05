@@ -12,7 +12,7 @@ import Home from "./components/Home";
 import Register from "./components/user/Register";
 import Login from "./components/user/Login";
 import Scraper from "./components/user/Scraper";
-
+import Main from "./components/Main";
 export const LoginContext = createContext(); // For login status
 export const ProductContext = createContext(); // For product data
 
@@ -74,7 +74,7 @@ function App() {
         <BrowserRouter>
           <Nav />
           <Routes>
-            <Route path="/" element={<h1>Hello, </h1>} />
+            <Route path="/" element={<Main/>} />
             <Route path="/home" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
