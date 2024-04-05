@@ -19,7 +19,7 @@ export default function Filter(props) {
     setProducts(props.products);
   }, [props.products]);
 
-  useEffect(() => {}, []);
+  useEffect(() => {}, [setProducts]);
 
   // Pagination ++++++++++++++++++++++++++++++++
 
