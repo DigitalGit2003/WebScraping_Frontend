@@ -61,7 +61,13 @@ function App() {
       localStorage.clear();
     }
   }
+  
+  const [role, setRole] = useState();
 
+  function changeRole(value) {
+    setRole(value);
+    localStorage.setItem("role", value);
+  }
   /* For Manage ProductContext *
    *
    */
@@ -69,7 +75,7 @@ function App() {
   const [data, setData] = useState([]);
 
   return (
-    <LoginContext.Provider value={[loggedIn, changedLoggedIn]}>
+    <LoginContext.Provider value={[loggedIn, changedLoggedIn, role, changeRole]}>
       <ProductContext.Provider value={[data, setData]}>
         <BrowserRouter>
           <Nav />

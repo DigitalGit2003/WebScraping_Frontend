@@ -6,14 +6,14 @@ import { LoginContext } from "../../App";
 
 export default function Login() {
   useEffect(() => {
-    if (loggedIn === true) {
-      navigate("/scraper");
+    if (loggedIn) {
+      navigate("/home");
     }
   }, []);
 
   const BASE_URI = process.env.REACT_APP_API_URI;
 
-  const [loggedIn, setLoggedIn] = useContext(LoginContext);
+  const [loggedIn, setLoggedIn, role, setRole] = useContext(LoginContext);
 
   const [formData, setFormData] = useState({});
   const handleChange = (e) => {
@@ -51,8 +51,8 @@ export default function Login() {
         localStorage.setItem("refresh_token", result.refresh_token);
 
         setLoggedIn(true);
+        getRole();
 
-        navigate("/scraper");
       } else {
         result = await result.json();
         let msg = "";
@@ -65,6 +65,28 @@ export default function Login() {
     } catch (err) {
       setIsLoading(false);
       setIsError("Something Went Wrong");
+    }
+  };
+
+  const getRole = async () => {
+    let result = await fetch(`${BASE_URI}/auth/getrole`, {
+      method: "get",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    });
+
+    if (result.ok) {
+      result = await result.json();
+      
+      if (result.role === "super-admin") {
+        setRole("super-admin");
+        navigate("/Home");
+      }
+      else if(result.role === "admin"){
+        setRole("admin");
+        navigate("/scraper");
+      }
     }
   };
 
