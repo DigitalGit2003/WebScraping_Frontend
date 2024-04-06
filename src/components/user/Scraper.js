@@ -5,10 +5,13 @@ import { ProductContext } from "../../App";
 import ScrapeCard from "./ScrapeCard";
 
 export default function Scraper() {
+  const role = localStorage.getItem("role");
+
   useEffect(() => {
-    if (loggedIn === false) {
-      navigate("/login");
+    if (role != "admin") {
+      navigate("/home");
     }
+
   }, []);
   
   const BASE_URI = process.env.REACT_APP_API_URI;

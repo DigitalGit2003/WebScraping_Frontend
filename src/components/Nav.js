@@ -7,7 +7,7 @@ import { LoginContext } from "../App";
 import { NavLink } from "react-router-dom";
 
 export default function Nav() {
-  const [loggedIn, setLoggedIn] = useContext(LoginContext);
+  const [loggedIn, setLoggedIn, role, setRole] = useContext(LoginContext);
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
@@ -49,22 +49,30 @@ export default function Nav() {
               </span>
             </NavLink>
           )}
+
+          {loggedIn && (
+            <NavLink
+              to={"/register"}
+              activeClassName="text-gray-900"
+              className="-m-0.5 flex items-center rounded-md p-3 text-sm font-semibold hover:bg-gray-100"
+            >
+              <span className="ml-3 text-base font-medium text-gray-900">
+                Add Admin
+              </span>
+              <span>
+                <ChevronRight className="ml-3 h-4 w-4" />
+              </span>
+            </NavLink>
+          )}
         </div>
         <div className="hidden space-x-2 lg:block">
-          <button
-            type="button"
-            className="rounded-md bg-transparent px-3 py-2 text-sm font-semibold text-black hover:bg-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-            onClick={() => (window.location.href = "/register")}
-          >
-            Register
-          </button>
-
           {loggedIn ? (
             <button
               type="button"
               className="rounded-md border border-black px-3 py-2 text-sm font-semibold text-black shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
               onClick={() => {
                 setLoggedIn(false);
+                setRole(null);
                 window.location.href = "/login";
               }}
             >

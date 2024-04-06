@@ -1,9 +1,20 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../../App";
+
 export default function Register() {
   
+  const role = localStorage.getItem("role");  
+  useEffect(() => {
+    if(role != "super-admin"){
+      navigate("/home");
+    }
+
+    setSuccessful("");
+  }, []);
+
   const BASE_URI = process.env.REACT_APP_API_URI;
 
   const [formData, setFormData] = useState({});
@@ -13,6 +24,7 @@ export default function Register() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState("");
+  const [isSuccessful, setSuccessful] = useState("");
 
   const navigate = useNavigate();
 
@@ -31,6 +43,7 @@ export default function Register() {
         body: JSON.stringify(formData),
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       });
 
@@ -65,8 +78,9 @@ export default function Register() {
       }
 
       if (result.message) {
-        navigate("/login");
-      }else{
+        console.log(result.message);
+        setSuccessful("Admin added Successfuly.");
+      } else {
         setIsError(msg);
       }
     } catch (err) {
@@ -80,21 +94,11 @@ export default function Register() {
         <div className="flex items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
           <div className="xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md">
             <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl">
-              Register
+              Add Admin in the System
             </h2>
-            <p className="mt-2 text-base text-gray-600">
-              Already have an account?{" "}
-              <a
-                href="/login"
-                title=""
-                className="font-medium text-black transition-all duration-200 hover:underline"
-              >
-                Login
-              </a>
-            </p>
-            <span className="text-red-500">
-              {isError}
-            </span>
+            
+            <span className="text-red-500">{isError}</span>
+            {isError === "" && <span className="text-green-700">{isSuccessful}</span> }
             <form action="#" method="POST" className="mt-8">
               <div className="space-y-5">
                 <div>
@@ -112,7 +116,7 @@ export default function Register() {
                     <input
                       className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                       type="text"
-                      placeholder="Name"
+                      placeholder="Name of an Admin"
                       id="name"
                       onChange={handleChange}
                     ></input>
@@ -133,7 +137,7 @@ export default function Register() {
                     <input
                       className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                       type="email"
-                      placeholder="Email"
+                      placeholder="Email of an Admin"
                       id="email"
                       onChange={handleChange}
                     ></input>
@@ -155,7 +159,7 @@ export default function Register() {
                     <input
                       className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                       type="password"
-                      placeholder="Password"
+                      placeholder="Create Password for an Admin"
                       id="password"
                       onChange={handleChange}
                     ></input>
@@ -167,8 +171,17 @@ export default function Register() {
                     className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
                     onClick={storeData}
                   >
-                  {isLoading ? "Loading........." : <> Create Account <ArrowRight className="ml-2" size={16} /> </>}
-                  
+                    {isLoading ? (
+                      "Loading........."
+                    ) : (
+                      <>
+                        {" "}
+                        Create Account <ArrowRight
+                          className="ml-2"
+                          size={16}
+                        />{" "}
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
