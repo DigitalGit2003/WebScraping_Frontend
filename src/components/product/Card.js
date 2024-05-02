@@ -5,7 +5,7 @@ export default function Card(item) {
   item = item.product;
 
   return (
-    <div className="w-[300px] rounded-md border-4 m-1">
+    <div className="w-[300px] rounded-md border-4 m-1 border-gray-400">
       <img
         src={item.image_url} // Imagelink
         alt={item.title} // Name
@@ -27,9 +27,9 @@ export default function Card(item) {
             href={item.product_link}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 underline"
+            className="text-white"
           >
-            Product Link
+            View Product
           </a>
         </button>
       </div>

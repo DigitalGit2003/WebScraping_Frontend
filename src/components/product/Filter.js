@@ -4,7 +4,7 @@ import Card from "./Card";
 import ReactPaginate from "react-paginate";
 import { useState } from "react";
 import { ProductContext } from "../../App";
-import { FallingLines } from "react-loader-spinner";
+import { Circles, Hourglass } from "react-loader-spinner";
 
 const PER_PAGE = 6;
 
@@ -106,7 +106,8 @@ export default function Filter(props) {
       return product.price >= min_price && product.price <= max_price;
     });
 
-    setProducts(filteredProducts);
+    const sortedProducts = filteredProducts.sort((a, b) => a.price - b.price);
+    setProducts(sortedProducts);
   };
 
   const searchByImage = async () => {
@@ -144,6 +145,7 @@ export default function Filter(props) {
     <>
       <div className="mx-5 max-w-10xl px-2 py-3">
         {/* Top */}
+        <hr className="my-1 border-gray-600" />
         <div className="md:flex md:flex-row md:items-start md:justify-center">
           <div className="flex justify-between space-x-10">
             <div className="flex-3 -pt-1">
@@ -220,7 +222,7 @@ export default function Filter(props) {
                   className="rounded-md bg-black mx-5 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ml-1"
                   onClick={sortBasedOn}
                 >
-                  Search
+                  Sort
                 </button>
               </div>
             </div>
@@ -247,17 +249,20 @@ export default function Filter(props) {
             </button>
           </div>
         </div>
-        <hr className="my-8" />
+        <hr className="my-3 border-gray-600" />
         <div className="lg:grid lg:grid-cols-12 lg:gap-x-6">
           <div className="flex flex-wrap h-[400px] w-full rounded-lg border-2 border-dashed px-2 lg:col-span-8 lg:h-full">
             {props.loader ? (
-              <div>
+              <div className="flex justify-center items-center h-full w-full">
                 {" "}
-                <FallingLines
-                  color="black"
-                  width="300"
+                <Hourglass
                   visible={true}
-                  ariaLabel="falling-circles-loading"
+                  height="80"
+                  width="80"
+                  ariaLabel="hourglass-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  colors={["black", "gray"]}
                 />{" "}
               </div>
             ) : (
